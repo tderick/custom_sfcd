@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
-from odoo import models, fields, api
 import logging
+from odoo import models, fields, api
+from odoo.exceptions import ValidationError
 
 logger = logging.getLogger(__name__)
 
@@ -21,6 +22,20 @@ class SaleOrderInherit(models.Model):
     phone = fields.Char("Téléphone", required=True)
 
     country_enforce_cities = fields.Boolean()
+
+    # def _default_partner(self):
+    #     result = self.env['res.partner'].search(
+    #         [(self.env.user, 'in', 'user_ids')])
+    #     if len(result) == 1:
+    #         return result
+    #     else:
+    #         raise ValidationError(
+    #             _("L'utilisateur %s doit être associé à une company")
+    #             % (self.env.user.name)
+    #         )
+
+    # partner_id = fields.Many2one(
+    #     'res.partner', string='Client', default=_default_partner)
 
     zip_id = fields.Many2one(
         comodel_name="res.city.zip",
@@ -162,15 +177,20 @@ class SaleOrderInherit(models.Model):
     def _address_fields(self):
         return super()._address_fields() + ["zip_id"]
 
-    # @api.model
-    # def write(self, vals):
-    #     self.ensure_one()
 
-    #     logger.critical("=============>", self.env.user.name)
+class SaleOrderLine(models.Model):
 
-    #     if self.env.user.company_id:
-    #         vals['partner_id'] = self.env.user.company_id
-    #     else:
-    #         vals['partner_id'] = self.env.user
+    _inherit = 'sale.order.line'
 
-    #     return super(SaleOrderInherit, self).write(vals)
+    quantity_in_stock = fields.Float(
+        "Quantité en stock", readonly=True, store=False, compute="_compute_qty_in_stock")
+
+    @api.depends('product_id')
+    def _compute_qty_in_stock(self):
+        self.quantity_in_stock = self.product_id.qty_available
+
+    @api.constrains("product_uom_qty")
+    def _constrain_qty_valid(self):
+        if self.product_uom_qty > self.quantity_in_stock:
+            raise ValidationError(
+                "Vous ne pouvez pas demander une quantité superieure à la quantité en stock")

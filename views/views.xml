@@ -21,7 +21,7 @@
 						<field name="zip_id"
 							options="{'create_name_field': 'city', 'no_open': True, 'no_create': True}"
 							placeholder="City completion" class="oe_edit_only"
-							attrs="{'readonly': [('state', 'in', ['sale', 'done'])]}" />
+							attrs="{'invisible': [('state', 'in', ['sale', 'done'])]}" />
 						<field name="city" placeholder="Cité" class="o_address_city"
 							attrs="{'readonly': [('state', 'in', ['sale', 'done'])]}" />
 						<field name="state_id" class="o_address_state" placeholder="État"
@@ -54,6 +54,12 @@
 				</xpath>
 
 				<xpath
+					expr="/form/sheet/notebook/page/field[@name='order_line']/tree/field[@name='product_uom_qty']"
+					position="before">
+					<field name="quantity_in_stock" />
+				</xpath>
+
+				<xpath
 					expr="/form/sheet/notebook/page/field[@name='order_line']/tree/field[@name='tax_id']"
 					position="attributes">
 					<attribute name="invisible">1</attribute>
@@ -61,6 +67,18 @@
 
 				<xpath
 					expr="/form/sheet/notebook/page/field[@name='order_line']/tree/field[@name='price_subtotal']"
+					position="attributes">
+					<attribute name="invisible">1</attribute>
+				</xpath>
+
+				<xpath
+					expr="/form/sheet/notebook/page/field[@name='order_line']/tree/field[@name='qty_invoiced']"
+					position="attributes">
+					<attribute name="invisible">1</attribute>
+				</xpath>
+
+				<xpath
+					expr="/form/sheet/notebook/page/field[@name='order_line']/tree/field[@name='qty_delivered']"
 					position="attributes">
 					<attribute name="invisible">1</attribute>
 				</xpath>
