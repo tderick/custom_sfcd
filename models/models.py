@@ -23,19 +23,11 @@ class SaleOrderInherit(models.Model):
 
     country_enforce_cities = fields.Boolean()
 
-    # def _default_partner(self):
-    #     result = self.env['res.partner'].search(
-    #         [(self.env.user, 'in', 'user_ids')])
-    #     if len(result) == 1:
-    #         return result
-    #     else:
-    #         raise ValidationError(
-    #             _("L'utilisateur %s doit être associé à une company")
-    #             % (self.env.user.name)
-    #         )
+    def _default_partner(self):
+        return self.env.user.partner_id.parent_id.id if self.env.user.partner_id.parent_id.id else self.env.user.partner_id.id
 
-    # partner_id = fields.Many2one(
-    #     'res.partner', string='Client', default=_default_partner)
+    partner_id = fields.Many2one(
+        'res.partner', string='Client', default=_default_partner)
 
     zip_id = fields.Many2one(
         comodel_name="res.city.zip",
@@ -187,10 +179,12 @@ class SaleOrderLine(models.Model):
 
     @api.depends('product_id')
     def _compute_qty_in_stock(self):
-        self.quantity_in_stock = self.product_id.qty_available
+        for order_line in self:
+            order_line.quantity_in_stock = order_line.product_id.qty_available
 
     @api.constrains("product_uom_qty")
     def _constrain_qty_valid(self):
-        if self.product_uom_qty > self.quantity_in_stock:
-            raise ValidationError(
-                "Vous ne pouvez pas demander une quantité superieure à la quantité en stock")
+        for order_line in self:
+            if order_line.product_uom_qty > order_line.quantity_in_stock:
+                raise ValidationError(
+                    "Vous ne pouvez pas demander une quantité superieure à la quantité en stock")

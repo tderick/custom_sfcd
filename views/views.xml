@@ -8,9 +8,12 @@
 			<field name="type">form</field>
 			<field name="inherit_id" ref="sale.view_order_form" />
 			<field name="arch" type="xml">
+
+				<!-- Hide paiement term -->
 				<xpath expr="//field[@name='payment_term_id']" position="replace">
 				</xpath>
 
+				<!-- Display Delivery address -->
 				<xpath expr="//field[@name='partner_id']" position="after">
 					<span class="o_form_label o_td_label" name="address_name">
 						<b>Addresse de livraison</b>
@@ -39,6 +42,14 @@
 						attrs="{'readonly': [('state', 'in', ['sale', 'done'])]}" />
 					<field name="phone" placeholder="Téléphone" widget="phone"
 						attrs="{'readonly': [('state', 'in', ['sale', 'done'])]}" />
+				</xpath>
+
+				<xpath expr="//field[@name='partner_id']" position="replace">
+					<field name="partner_id" widget="res_partner_many2one"
+						context="{'res_partner_search_mode': 'customer', 'show_address': 0, 'show_vat': False}"
+						options="{&quot;always_reload&quot;: True}"
+						attrs="{'readonly':True}"
+					/>
 				</xpath>
 
 				<xpath expr="//field[@name='validity_date']" position="replace">
@@ -90,6 +101,13 @@
 				</xpath>
 
 				<xpath
+					expr="/form/sheet/notebook/page/field[@name='order_line']"
+					position="attributes">
+					<attribute name="attrs">{'readonly': [('state', 'in',
+						('sent','sale','done','cancel'))]}</attribute>
+				</xpath>
+
+				<xpath
 					expr="/form/sheet/notebook/page/group[@name='note_group']"
 					position="replace"> </xpath>
 
@@ -104,6 +122,7 @@
 					position="attributes">
 					<attribute name="invisible">1</attribute>
 				</xpath>
+				
 			</field>
 		</record>
 	</data>
