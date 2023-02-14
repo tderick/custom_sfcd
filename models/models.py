@@ -169,6 +169,27 @@ class SaleOrderInherit(models.Model):
     def _address_fields(self):
         return super()._address_fields() + ["zip_id"]
 
+    def action_confirm(self):
+        super().action_confirm()
+
+        # Send email to addmin
+        self._send_quotation_email()
+
+        return True
+
+    def action_cancel(self):
+        result = super().action_cancel()
+        self._send_quotation_cancel_email()
+        return result
+
+    def _send_quotation_email(self):
+        mail_template = self.env.ref('custom_sfcd.email_quotation_sent')
+        mail_template.send_mail(self.id, force_send=True)
+
+    def _send_quotation_cancel_email(self):
+        mail_template = self.env.ref('custom_sfcd.email_quotation_cancel')
+        mail_template.send_mail(self.id, force_send=True)
+
 
 class SaleOrderLine(models.Model):
 

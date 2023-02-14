@@ -122,7 +122,42 @@
 					position="attributes">
 					<attribute name="invisible">1</attribute>
 				</xpath>
-				
+
+				<xpath expr="//form/header/button[@name='action_quotation_send'][1]"
+					position="attributes">
+					<attribute name="invisible">1</attribute>
+				</xpath>
+				<xpath expr="//form/header/button[@name='action_quotation_send'][2]"
+					position="attributes">
+					<attribute name="invisible">1</attribute>
+				</xpath>
+				<xpath expr="//form/header/button[@name='action_quotation_send'][3]"
+					position="attributes">
+					<attribute name="invisible">1</attribute>
+				</xpath>
+				<xpath expr="//form/header/button[@name='action_quotation_send'][4]"
+					position="attributes">
+					<attribute name="invisible">1</attribute>
+				</xpath>
+
+
+				<xpath expr="//form/header/button[@id='action_confirm']"
+					position="replace">
+					<button name="action_confirm" id="action_confirm"
+						string="Confirmer et soumettre"
+						class="btn-primary" type="object"
+						attrs="{'invisible': [('state', 'not in', ['draft'])]}" />
+				</xpath>
+
+				<xpath expr="//form/header/button[@name='action_confirm'][2]"
+					position="replace">
+				</xpath>
+
+				<xpath expr="//form/header/button[@name='372'][1]"
+					position="replace">
+				</xpath>
+
+
 			</field>
 		</record>
 	</data>

@@ -1,0 +1,77 @@
+<odoo>
+    <!-- noupdate="1" -->
+    <data>
+        <!--Email template -->
+        <record id="email_quotation_sent" model="mail.template">
+            <field name="name">Email Template</field>
+            <field name="model_id" ref="custom_sfcd.model_sale_order" />
+            <field name="email_to">${(object.company_id.email |safe)}</field>
+            <field name="email_from">${object.partner_id.email}</field>
+            <field name="subject">Commande ${object.name or 'n/a' } de ${object.partner_id.name}</field>
+            <field name="auto_delete" eval="True" />
+            <field name="lang">${object.partner_id.lang}</field>
+            <field name="body_html"><![CDATA[
+                 <p><b>${object.partner_id.name}</b> vient de passer la commande suivante à livrer le <b>${object.delivery_date}</b>:</p>
+                 <br/>
+               
+                    <table border="1">
+
+                        <thead>
+                            <tr>
+                                <th style="width:135px">Produit</th>
+                                <th style="width: 125px;">Quantité</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                        </tbody>
+                            % for row in object.order_line:
+                            <tr>
+                                <td> ${row.name}</td>
+                                <td style="text-align: center;">${row.product_uom_qty or ''}</td>
+                            </tr>
+                            %endfor
+                        <tbody>
+                    <table>
+                 <br/>
+                ]]>
+            </field>
+        </record>
+
+        <record id="email_quotation_cancel" model="mail.template">
+            <field name="name">Email Template</field>
+            <field name="model_id" ref="custom_sfcd.model_sale_order" />
+            <field name="email_to">${(object.company_id.email |safe)}</field>
+            <field name="email_from">${object.partner_id.email}</field>
+            <field name="subject">Annulation commande ${object.name or'n/a' } de ${object.partner_id.name}</field>
+            <field name="auto_delete" eval="True" />
+            <field name="lang">${object.partner_id.lang}</field>
+            <field name="body_html"><![CDATA[
+                 <p><b>${object.partner_id.name}</b> vient d'annuler la commande suivante:</p>
+                 <br/>
+               
+                    <table border="1">
+
+                        <thead>
+                            <tr>
+                                <th style="width:135px">Produit</th>
+                                <th style="width: 125px;">Quantité</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                        </tbody>
+                            % for row in object.order_line:
+                            <tr>
+                                <td> ${row.name}</td>
+                                <td style="text-align: center;">${row.product_uom_qty or ''}</td>
+                            </tr>
+                            %endfor
+                        <tbody>
+                    <table>
+                 <br/>
+                ]]>
+            </field>
+        </record>
+    </data>
+</odoo>
