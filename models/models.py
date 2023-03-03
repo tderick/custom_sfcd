@@ -327,3 +327,48 @@ class ProductTemplateInherit(models.Model):
             domain = [('partner_id.user_ids', 'like', user.id)]
 
         return super(ProductTemplateInherit, self).search_read(domain, fields, offset, limit, order)
+
+    @api.model
+    def _name_search(self, name, args=None, operator="ilike", limit=100, name_get_uid=None):
+        args = args or []
+
+        domain = []
+
+        # Get the connected user
+        user = self.env.user
+
+        if not self.env.is_admin():
+            domain = [('partner_id.user_ids', 'like', user.id)]
+
+        return self._search(domain+args, limit=limit, access_rights_uid=name_get_uid)
+
+
+class ProductProductInherit(models.Model):
+    _inherit = "product.product"
+
+    @api.model
+    def search_read(self, domain=None, fields=None, offset=0, limit=None, order=None):
+
+        # Get the connected user
+        user = self.env.user
+
+        domain = None
+
+        if not self.env.is_admin():
+            domain = [('partner_id.user_ids', 'like', user.id)]
+
+        return super(ProductProductInherit, self).search_read(domain, fields, offset, limit, order)
+
+    @api.model
+    def _name_search(self, name, args=None, operator="ilike", limit=100, name_get_uid=None):
+        args = args or []
+
+        domain = []
+
+        # Get the connected user
+        user = self.env.user
+
+        if not self.env.is_admin():
+            domain = [('partner_id.user_ids', 'like', user.id)]
+
+        return self._search(domain+args, limit=limit, access_rights_uid=name_get_uid)
