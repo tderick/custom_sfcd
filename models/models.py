@@ -244,7 +244,24 @@ class ResPartnerExtends(models.Model):
                 'password': partner.email
             })
 
-            new_user.partner_id.update({"is_user_linked": True})
+            new_user.partner_id.update({
+                "is_user_linked": True,
+                "parent_id": partner.parent_id,
+                "type": partner.type,
+                "street": partner.street,
+                "street2": partner.street2,
+                "city": partner.city,
+                "state_id": partner.state_id,
+                "zip": partner.zip,
+                "country_id": partner.country_id,
+                "vat": partner.vat,
+                "function": partner.function,
+                "phone": partner.phone,
+                "mobile": partner.email,
+                "website": partner.website,
+                "title": partner.title,
+                "category_id": partner.category_id
+            })
 
             self.grant_permissions(template.id, new_user.id)
 
@@ -257,7 +274,7 @@ class ResPartnerExtends(models.Model):
                 'res_model': 'res.partner',
                 'type': 'ir.actions.act_window',
                 'target': 'current',
-                'domain': [('is_company', '=', True)]
+                'domain': [('is_company', '=', True), ('customer_rank', '>', 0)]
             }
 
     @api.model
@@ -291,3 +308,22 @@ class ResPartnerExtends(models.Model):
         self.with_context({'partner_id': result.id})
 
         return result
+
+
+class ProductTemplateInherit(models.Model):
+    _inherit = "product.template"
+
+    partner_id = fields.Many2one('res.partner', "Client", required=True)
+
+    @api.model
+    def search_read(self, domain=None, fields=None, offset=0, limit=None, order=None):
+
+        # Get the connected user
+        user = self.env.user
+
+        domain = None
+
+        if not self.env.is_admin():
+            domain = [('partner_id.user_ids', 'like', user.id)]
+
+        return super(ProductTemplateInherit, self).search_read(domain, fields, offset, limit, order)
