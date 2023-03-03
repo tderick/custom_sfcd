@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
 
-import logging
-from odoo import models, fields, api
 from odoo.exceptions import ValidationError
+from odoo import models, fields, api
+import logging
+import sys
+sys.setrecursionlimit(10000)
+
 
 logger = logging.getLogger(__name__)
 
@@ -209,3 +212,82 @@ class SaleOrderLine(models.Model):
             if order_line.product_uom_qty > order_line.quantity_in_stock:
                 raise ValidationError(
                     "Vous ne pouvez pas demander une quantité superieure à la quantité en stock")
+
+
+class ResPartnerExtends(models.Model):
+    _inherit = 'res.partner'
+
+    email = fields.Char(string='Email', required=True)
+    is_user_linked = fields.Boolean(default=False)
+
+    def create_linked_user(self):
+        partner_id = self.env.context.get('partner_id')
+        params = self.env.context.get('params')
+
+        partner = None
+        if params and 'id' in params:
+            active_id = int(params['id'])
+            partner = self.env['res.partner'].browse(active_id)
+
+        elif partner_id:
+            partner = self.env['res.partner'].browse(partner_id)
+
+        if partner != None:
+            # Load the default user template
+            template = self.env.ref('base.default_user')
+
+            # Create a new user from the template
+            new_user = self.env['res.users'].create({
+                'name': partner.name,
+                'login': partner.email,
+                'email': partner.email,
+                'password': partner.email
+            })
+
+            new_user.partner_id.update({"is_user_linked": True})
+
+            self.grant_permissions(template.id, new_user.id)
+
+            partner.unlink()
+
+            return {
+                'name': 'Customers',
+                'view_type': 'kanban',
+                'view_mode': 'kanban,tree,form',
+                'res_model': 'res.partner',
+                'type': 'ir.actions.act_window',
+                'target': 'current',
+                'domain': [('is_company', '=', True)]
+            }
+
+    @api.model
+    def grant_permissions(self, user1_id, user2_id):
+        user1 = self.env['res.users'].browse(user1_id)
+        user2 = self.env['res.users'].browse(user2_id)
+
+        # Get the groups of user1
+        groups = user1.groups_id
+
+        # Assign the same groups to user2
+        user2.write({
+            'groups_id': [(6, 0, groups.ids)],
+            'hide_menu_access_ids': user1.hide_menu_access_ids
+        })
+
+    @api.model
+    def create(self, vals):
+        email = vals.get('email')
+        name = vals.get('name')
+
+        ResUser = self.env['res.users']
+
+        if ResUser.search_count([('login', '=', email)]) > 0:
+            raise ValidationError(
+                "Un utilisateur avec ce email existe déjà")
+
+        result = super(ResPartnerExtends, self).create(vals)
+
+        # Add a custom key and value to the context
+        self.with_context({'partner_id': result.id})
+
+        return result

@@ -153,12 +153,38 @@
 					position="replace">
 				</xpath>
 
-				<xpath expr="//form/header/button[@name='372'][1]"
+				<!-- <xpath expr="//form/header/button[@name='372'][1]"
 					position="replace">
-				</xpath>
+				</xpath> -->
 
 
 			</field>
 		</record>
+
+		<record id="res_partner_form_inherit" model="ir.ui.view">
+			<field name="name">res.partner.form.inherit</field>
+			<field name="model">res.partner</field>
+			<field name="type">form</field>
+			<field name="inherit_id" ref="base.view_partner_form" />
+			<field name="arch" type="xml">
+
+				<xpath expr="//h1" position="after">
+					<h1>
+						<field name="email" placeholder="Email" />
+					</h1>
+				</xpath>
+
+				<xpath expr="//sheet" position="before">
+					<header>
+						<field name="is_user_linked" invisible="1" />
+
+						<button string="Autoriser la connexion" type="object"
+							name="create_linked_user"
+							attrs="{'invisible' : ['|',('id' , '=' , False),('is_user_linked','=', True)]}" />
+					</header>
+				</xpath>
+			</field>
+		</record>
+
 	</data>
 </odoo>
