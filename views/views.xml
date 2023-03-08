@@ -71,6 +71,18 @@
 				</xpath>
 
 				<xpath
+					expr="/form/sheet/notebook/page/field[@name='order_line']/tree/field[@name='product_id']"
+					position="before">
+					<field name="brand_id" options="{'no_create': True}" />
+				</xpath>
+
+				<xpath
+					expr="/form/sheet/notebook/page/field[@name='order_line']/tree/field[@name='product_id']"
+					position="attributes">
+					<attribute name="context">{'brand_id':brand_id}</attribute>
+				</xpath>
+
+				<xpath
 					expr="/form/sheet/notebook/page/field[@name='order_line']/tree/field[@name='tax_id']"
 					position="attributes">
 					<attribute name="invisible">1</attribute>
@@ -192,6 +204,11 @@
 			<field name="type">form</field>
 			<field name="inherit_id" ref="product.product_template_form_view" />
 			<field name="arch" type="xml">
+
+				<xpath expr="//sheet/div/div[@name='options']" position="attributes">
+					<attribute name="invisible">1</attribute>
+				</xpath>
+
 				<xpath expr="//page/group/group[@name='group_standard_price']/div"
 					position="attributes">
 					<attribute name="invisible">1</attribute>
@@ -277,6 +294,18 @@
 
 				<xpath expr="//field[@name='categ_id']" position="after">
 					<field name="partner_id" widget="partner" domain="[('customer_rank','>',0)]" />
+				</xpath>
+
+				<xpath expr="//notebook/page[@name='sales']" position="attributes">
+					<attribute name="invisible">1</attribute>
+				</xpath>
+
+				<xpath expr="//notebook/page[@name='purchase']" position="attributes">
+					<attribute name="invisible">1</attribute>
+				</xpath>
+
+				<xpath expr="//notebook/page[@name='inventory']" position="attributes">
+					<attribute name="invisible">1</attribute>
 				</xpath>
 			</field>
 		</record>

@@ -198,6 +198,8 @@ class SaleOrderLine(models.Model):
 
     _inherit = 'sale.order.line'
 
+    brand_id = fields.Many2one('product.brand',)
+
     quantity_in_stock = fields.Float(
         "Quantité en stock", readonly=True, store=False, compute="_compute_qty_in_stock")
 
@@ -315,6 +317,8 @@ class ProductTemplateInherit(models.Model):
 
     partner_id = fields.Many2one('res.partner', "Client", required=True)
 
+    type = fields.Selection(default='product')
+
     longueur = fields.Float('Longueur', default=0.0)
     longueur_uom_name = fields.Char("cm", readonly=True, default="cm")
 
@@ -381,10 +385,15 @@ class ProductProductInherit(models.Model):
 
         domain = []
 
+        # Get the brand id
+        brand_id = self.env.context.get('brand_id')
+
         # Get the connected user
         user = self.env.user
 
         if not self.env.is_admin():
             domain = [('partner_id.user_ids', 'like', user.id)]
+        if brand_id:
+            domain += [('brand_id', '=', brand_id)]
 
         return self._search(domain+args, limit=limit, access_rights_uid=name_get_uid)
