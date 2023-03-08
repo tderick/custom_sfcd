@@ -315,6 +315,22 @@ class ProductTemplateInherit(models.Model):
 
     partner_id = fields.Many2one('res.partner', "Client", required=True)
 
+    longueur = fields.Float('Longueur', default=0.0)
+    longueur_uom_name = fields.Char("cm", readonly=True, default="cm")
+
+    largeur = fields.Float('Largeur', default=0.0)
+    largeur_uom_name = fields.Char("cm", readonly=True, default="cm")
+
+    hauteur = fields.Float('Hauteur', default=0.0)
+    hauteur_uom_name = fields.Char("cm", readonly=True, default="cm")
+
+    volume = fields.Float('Volume', compute='_compute_volume', store=True)
+
+    @api.depends('longueur', 'largeur', 'hauteur')
+    def _compute_volume(self):
+        for record in self:
+            record.volume = record.longueur*record.largeur*record.hauteur
+
     @api.model
     def search_read(self, domain=None, fields=None, offset=0, limit=None, order=None):
 

@@ -192,8 +192,87 @@
 			<field name="type">form</field>
 			<field name="inherit_id" ref="product.product_template_form_view" />
 			<field name="arch" type="xml">
-				<xpath expr="//page/group/group[@name='group_standard_price']" position="attributes">
+				<xpath expr="//page/group/group[@name='group_standard_price']/div"
+					position="attributes">
 					<attribute name="invisible">1</attribute>
+				</xpath>
+
+				<xpath
+					expr="//page/group/group[@name='group_standard_price']/div[@name='standard_price_uom']"
+					position="attributes">
+					<attribute name="invisible">1</attribute>
+				</xpath>
+
+				<xpath
+					expr="//page/group/group[@name='group_standard_price']/label[@for='standard_price']"
+					position="attributes">
+					<attribute name="invisible">1</attribute>
+				</xpath>
+
+				<xpath expr="//page/group/group[@name='group_standard_price']/label"
+					position="attributes">
+					<attribute name="invisible">1</attribute>
+				</xpath>
+
+				<xpath
+					expr="//page[@name='general_information']/group/group[@name='group_standard_price']"
+					position="after">
+					<group string="Logistics"
+						attrs="{'invisible': [('type', 'not in', ['product', 'consu'])]}">
+						<label for="weight"
+							attrs="{'invisible':[('product_variant_count', '&gt;', 1), ('is_product_variant', '=', False)]}" />
+						<div class="o_row" name="weight"
+							attrs="{'invisible':[('product_variant_count', '&gt;', 1), ('is_product_variant', '=', False)]}">
+							<field name="weight" style="width: 50%" />
+							<span>
+								<field name="weight_uom_name" />
+							</span>
+						</div>
+
+						<label for="longueur"
+							attrs="{'invisible':[('product_variant_count', '&gt;', 1), ('is_product_variant', '=', False)]}" />
+						<div class="o_row" name="longueur"
+							attrs="{'invisible':[('product_variant_count', '&gt;', 1), ('is_product_variant', '=', False)]}">
+							<field name="longueur" string="Longueur"
+								onchange="compute_volume(longueur, largeur, hauteur, volume)" />
+							<span>
+								<field name="longueur_uom_name" />
+							</span>
+						</div>
+
+						<label for="largeur"
+							attrs="{'invisible':[('product_variant_count', '&gt;', 1), ('is_product_variant', '=', False)]}" />
+						<div class="o_row" name="largeur"
+							attrs="{'invisible':[('product_variant_count', '&gt;', 1), ('is_product_variant', '=', False)]}">
+							<field name="largeur" string="Largeur"
+								onchange="compute_volume(longueur, largeur, hauteur, volume)" />
+							<span>
+								<field name="largeur_uom_name" />
+							</span>
+						</div>
+
+						<label for="hauteur"
+							attrs="{'invisible':[('product_variant_count', '&gt;', 1), ('is_product_variant', '=', False)]}" />
+						<div class="o_row" name="hauteur"
+							attrs="{'invisible':[('product_variant_count', '&gt;', 1), ('is_product_variant', '=', False)]}">
+							<field name="hauteur" string="Hauteur"
+								onchange="compute_volume(longueur, largeur, hauteur, volume)" />
+							<span>
+								<field name="hauteur_uom_name" />
+							</span>
+						</div>
+
+
+						<label for="volume"
+							attrs="{'invisible':[('product_variant_count', '&gt;', 1), ('is_product_variant', '=', False)]}" />
+						<div class="o_row" name="volume"
+							attrs="{'invisible':[('product_variant_count', '&gt;', 1), ('is_product_variant', '=', False)]}">
+							<field name="volume" string="Volume" readonly="1" />
+							<span>
+								<field name="volume_uom_name" />
+							</span>
+						</div>
+					</group>
 				</xpath>
 
 				<xpath expr="//field[@name='categ_id']" position="after">
@@ -262,6 +341,23 @@
 			<field name="inherit_id" ref="stock.product_template_form_view_procurement_button" />
 			<field name="arch" type="xml">
 				<xpath expr="//header/button[@name='action_update_quantity_on_hand']"
+					position="attributes">
+					<attribute name="invisible">1</attribute>
+				</xpath>
+
+				<xpath expr="//field[@name='responsible_id']" position="attributes">
+					<attribute name="invisible">1</attribute>
+				</xpath>
+			</field>
+		</record>
+
+		<record id="account_product_template_form_view_inherit" model="ir.ui.view">
+			<field name="name">product.template.form.inherit</field>
+			<field name="model">product.template</field>
+			<field name="type">form</field>
+			<field name="inherit_id" ref="account.product_template_form_view" />
+			<field name="arch" type="xml">
+				<xpath expr="//field[@name='taxes_id']"
 					position="attributes">
 					<attribute name="invisible">1</attribute>
 				</xpath>
