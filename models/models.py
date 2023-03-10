@@ -3,8 +3,7 @@
 from odoo.exceptions import ValidationError
 from odoo import models, fields, api
 import logging
-import sys
-sys.setrecursionlimit(10000)
+
 
 
 logger = logging.getLogger(__name__)
