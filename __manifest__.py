@@ -28,9 +28,8 @@
         'views/views.xml',
         'views/templates.xml',
         'data/email_template.xml',
+        'report/sale_order_report.xml',
+
     ],
-    # only loaded in demonstration mode
-    'demo': [
-        'demo/demo.xml',
-    ],
+    "qweb": ["static/src/xml/base.xml"]
 }
