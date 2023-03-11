@@ -231,7 +231,7 @@ class ResPartnerExtends(models.Model):
         elif partner_id:
             partner = self.env['res.partner'].browse(partner_id)
 
-        if partner != None:
+        if partner is not None and self.env['res.users'].search_count([('login', '=', partner.email)]) == 0:
             # Load the default user template
             template = self.env.ref('base.default_user')
 
@@ -393,15 +393,3 @@ class ProductProductInherit(models.Model):
             domain += [('brand_id', '=', brand_id)]
 
         return self._search(domain+args, limit=limit, access_rights_uid=name_get_uid)
-
-
-# class MailComposeMessageInherit(models.TransientModel):
-#     _inherit = 'mail.compose.message'
-
-#     def _action_send_mail(self, auto_commit=False):
-#         if self.model == 'sale.order':
-#             self = self.with_context(mailing_document_based=True)
-#             if self.env.context.get('mark_so_as_sent'):
-#                 self = self.with_context(
-#                     mail_notify_author=self.env.company.id)
-#         return super(MailComposeMessageInherit, self)._action_send_mail(auto_commit=auto_commit)
