@@ -9,6 +9,7 @@
 			<field name="inherit_id" ref="sale.view_order_form" />
 			<field name="arch" type="xml">
 
+
 				<!-- Hide paiement term -->
 				<xpath expr="//field[@name='payment_term_id']" position="replace">
 				</xpath>
@@ -186,6 +187,13 @@
 				<xpath expr="//form/sheet/div/button[@name='action_view_invoice']"
 					position="attributes">
 					<attribute name="invisible">1</attribute>
+				</xpath>
+
+				<xpath expr="//sheet/div[@name='button_box']" position="attributes">
+					<!-- <attribute name="groups">!base.group_user</attribute>
+					<attribute name="invisible">1</attribute> -->
+					<attribute name="attrs">
+						{'invisible': [('user_id','not in','stock.group_stock_user')]}</attribute>
 				</xpath>
 
 			</field>
@@ -464,6 +472,5 @@
 			</xpath>
 		</field>
 	</record>
-
 
 </odoo>
