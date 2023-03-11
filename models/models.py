@@ -1,10 +1,8 @@
 # -*- coding: utf-8 -*-
 
 from odoo.exceptions import ValidationError
-from odoo import models, fields, api
+from odoo import models, fields, api, _
 import logging
-
-
 
 logger = logging.getLogger(__name__)
 
@@ -171,26 +169,26 @@ class SaleOrderInherit(models.Model):
     def _address_fields(self):
         return super()._address_fields() + ["zip_id"]
 
-    def action_confirm(self):
-        super().action_confirm()
+   # def action_confirm(self):
+   #     super().action_confirm()
 
-        # Send email to addmin
-        self._send_quotation_email()
+   #     # Send email to addmin
+   #     self._send_quotation_email()
 
-        return True
+   #     return True
 
-    def action_cancel(self):
-        result = super().action_cancel()
-        self._send_quotation_cancel_email()
-        return result
+    # def action_cancel(self):
+    #     result = super().action_cancel()
+    #     self._send_quotation_cancel_email()
+    #     return result
 
-    def _send_quotation_email(self):
-        mail_template = self.env.ref('custom_sfcd.email_quotation_sent')
-        mail_template.send_mail(self.id, force_send=True)
+    # def _send_quotation_email(self):
+    #     mail_template = self.env.ref('custom_sfcd.email_quotation_sent')
+    #     mail_template.send_mail(self.id, force_send=True)
 
-    def _send_quotation_cancel_email(self):
-        mail_template = self.env.ref('custom_sfcd.email_quotation_cancel')
-        mail_template.send_mail(self.id, force_send=True)
+    # def _send_quotation_cancel_email(self):
+    #     mail_template = self.env.ref('custom_sfcd.email_quotation_cancel')
+    #     mail_template.send_mail(self.id, force_send=True)
 
 
 class SaleOrderLine(models.Model):
@@ -295,7 +293,6 @@ class ResPartnerExtends(models.Model):
     @api.model
     def create(self, vals):
         email = vals.get('email')
-        name = vals.get('name')
 
         ResUser = self.env['res.users']
 
@@ -396,3 +393,15 @@ class ProductProductInherit(models.Model):
             domain += [('brand_id', '=', brand_id)]
 
         return self._search(domain+args, limit=limit, access_rights_uid=name_get_uid)
+
+
+# class MailComposeMessageInherit(models.TransientModel):
+#     _inherit = 'mail.compose.message'
+
+#     def _action_send_mail(self, auto_commit=False):
+#         if self.model == 'sale.order':
+#             self = self.with_context(mailing_document_based=True)
+#             if self.env.context.get('mark_so_as_sent'):
+#                 self = self.with_context(
+#                     mail_notify_author=self.env.company.id)
+#         return super(MailComposeMessageInherit, self)._action_send_mail(auto_commit=auto_commit)
