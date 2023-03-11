@@ -381,6 +381,33 @@
 			</field>
 		</record>
 
+		<record id="sale_order_tree_inherit" model="ir.ui.view">
+			<field name="name">sale.order.tree.inherit</field>
+			<field name="model">sale.order</field>
+			<field name="type">tree</field>
+			<field name="inherit_id" ref="sale.view_order_tree" />
+			<field name="arch" type="xml">
+				<xpath expr="//field[@name='user_id']" position="replace">
+				</xpath>
+				<xpath expr="//field[@name='team_id']" position="replace">
+				</xpath>
+				<xpath expr="//field[@name='company_id']" position="replace">
+				</xpath>
+				<xpath expr="//field[@name='amount_untaxed']" position="replace">
+				</xpath>
+				<xpath expr="//field[@name='amount_tax']" position="replace">
+				</xpath>
+				<xpath expr="//field[@name='amount_total']" position="replace">
+				</xpath>
+				<xpath expr="//field[@name='activity_ids']" position="replace">
+				</xpath>
+				<xpath expr="//field[@name='tag_ids']" position="replace">
+				</xpath>
+				<xpath expr="//field[@name='invoice_status']" position="replace">
+				</xpath>
+			</field>
+		</record>
+
 		<record id="product_template_procurement_inherit" model="ir.ui.view">
 			<field name="name">product.template.inherit</field>
 			<field name="model">product.template</field>
