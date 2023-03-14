@@ -79,9 +79,16 @@
 				</xpath>
 
 				<xpath
+					expr="/form/sheet/notebook/page/field[@name='order_line']/tree/field[@name='brand_id']"
+					position="before">
+					<field name="product_category_id" options="{'no_create': True}" />
+				</xpath>
+
+				<xpath
 					expr="/form/sheet/notebook/page/field[@name='order_line']/tree/field[@name='product_id']"
 					position="attributes">
-					<attribute name="context">{'brand_id':brand_id}</attribute>
+					<attribute name="context">{'product_category_id':product_category_id,
+						'brand_id':brand_id}</attribute>
 				</xpath>
 
 				<xpath
@@ -189,12 +196,14 @@
 					<attribute name="invisible">1</attribute>
 				</xpath>
 
-				<xpath expr="//sheet/div[@name='button_box']" position="attributes">
-					<!-- <attribute name="groups">!base.group_user</attribute>
+				<!-- <xpath expr="//sheet/div[@name='button_box']" position="attributes">
+					<attribute name="groups">stock.group_stock_user</attribute>
 					<attribute name="invisible">1</attribute> -->
-					<attribute name="attrs">
-						{'invisible': [('user_id','not in','stock.group_stock_user')]}</attribute>
-				</xpath>
+				<!-- <attribute name="attrs">
+						{'invisible': [('user_id','not in','stock.group_stock_user')]}</attribute> -->
+				<!-- <attribute name="attrs">{'invisible': [('user_id', 'in',
+						['stock.group_stock_user'])]}</attribute> -->
+				<!-- </xpath> -->
 
 			</field>
 		</record>

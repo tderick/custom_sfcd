@@ -197,6 +197,8 @@ class SaleOrderLine(models.Model):
 
     brand_id = fields.Many2one('product.brand',)
 
+    product_category_id = fields.Many2one('product.category')
+
     quantity_in_stock = fields.Float(
         "Quantité en stock", readonly=True, store=False, compute="_compute_qty_in_stock")
 
@@ -329,7 +331,7 @@ class ProductTemplateInherit(models.Model):
     @api.depends('longueur', 'largeur', 'hauteur')
     def _compute_volume(self):
         for record in self:
-            record.volume = record.longueur*record.largeur*record.hauteur
+            record.volume = record.longueur*record.largeur*record.hauteur*0.000001
 
     @api.model
     def search_read(self, domain=None, fields=None, offset=0, limit=None, order=None):
@@ -384,6 +386,9 @@ class ProductProductInherit(models.Model):
         # Get the brand id
         brand_id = self.env.context.get('brand_id')
 
+        # Get the product category id
+        product_category_id = self.env.context.get('product_category_id')
+
         # Get the connected user
         user = self.env.user
 
@@ -391,5 +396,7 @@ class ProductProductInherit(models.Model):
             domain = [('partner_id.user_ids', 'like', user.id)]
         if brand_id:
             domain += [('brand_id', '=', brand_id)]
+        if product_category_id:
+            domain += [('categ_id', '=', product_category_id)]
 
         return self._search(domain+args, limit=limit, access_rights_uid=name_get_uid)
